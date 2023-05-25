@@ -1,8 +1,6 @@
 import  streamlit as st
 from docx import Document
-from docx.shared import Inches
 import pandas as pd
-
 
 def data_conv(url,sheet_url,start_q,end_q):
     sheet_adr = url
@@ -77,9 +75,11 @@ def data_conv(url,sheet_url,start_q,end_q):
     final_data = data_part_1 + data_part_2 + data_part_3
     try:
         document = Document()
-        p = document.add_paragraph(final_data)
-        document.add_page_break()
+        document.add_paragraph(final_data)
         document.save('demo.docx')
+        with open('demo.docx', 'rb') as file:
+            doc_data = file.read()
+        st.download_button(label='Download Word File', data=doc_data, file_name='my_document.docx')
         st.success("Word File is Done")
     except:
         st.error("Some Mistak in Google Sheet")
@@ -93,4 +93,3 @@ end_q = st.text_input("End Q. No.")
 button = st.button("Done")
 if button :
     data_conv(url,sheet_name,start_q,end_q)
-
