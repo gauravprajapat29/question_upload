@@ -2,13 +2,15 @@ import  streamlit as st
 from docx import Document
 import pandas as pd
 
-def data_conv(url,sheet_url,start_q,end_q):
-    sheet_adr = url
-    sheet_name = sheet_url
+def data_conv(sheet_url,sheet_Name,start_q,end_q):
+    sheet_adr = sheet_url
+    sheet_name = sheet_Name
     quation_start = int(start_q)
     quation_end = int(end_q)
 
-    url = f"https://docs.google.com/spreadsheets/d/{sheet_adr}/gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    ind = sheet_adr.index("edit")
+
+    url = sheet_url[:ind]+f"gviz/tq?tqx=out:csv&sheet={sheet_name}"
     dataset = pd.read_csv(url, index_col=False)
 
     data_part_1 = '''
