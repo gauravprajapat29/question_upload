@@ -49,8 +49,15 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
         opt_3 = dataset.iloc[:, 4][i]
         opt_4 = dataset.iloc[:, 5][i]
         ans = str(dataset.iloc[:, 6][i])
-        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4,
-               "ans": ans}
+        if ans == "A" or ans == "a" or ans == "1":
+            ans = "1"
+        elif ans == "B" or ans == "b" or ans == "2":
+            ans = "2"
+        elif ans == "C" or ans == "c" or ans == "3":
+            ans = "3"
+        elif ans == "D" or ans == "d" or ans == "4":
+            ans = "4"
+        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4, "ans": ans}
         data_part = """
         {QUESTION BEGINS}
         {QUESTION NUMBER} q_no
