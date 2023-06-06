@@ -12,7 +12,8 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
 
     url = sheet_url[:ind]+f"gviz/tq?tqx=out:csv&sheet={sheet_name}"
     dataset = pd.read_csv(url, index_col=False)
-
+    col = dataset.shape[1]
+    
     data_part_1 = '''
         INSTRUCTIONS:
 
@@ -39,7 +40,9 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
         for i, j in dic.items():
             text = text.replace(i, j)
         return text
-
+    
+    exp = "No explanation available"
+    exp_link = "No explanation available"
     p = 1
     for i in range(quation_start, quation_end + 1):
         q_no = str(p)
@@ -57,7 +60,18 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
             ans = "3"
         elif ans == "D" or ans == "d" or ans == "4":
             ans = "4"
-        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4, "ans": ans}
+         
+        if col == 7 :
+            exp = "No explanation available"
+            exp_link = "No explanation available"
+        elif col == 8 :
+            exp = str(dataset.iloc[:, 7][i])
+            exp_link = "No explanation available"
+        elif col == 9 :
+            exp = str(dataset.iloc[:, 7][i])
+            exp_link = str(dataset.iloc[:, 8][i])
+           
+        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4, "ans": ans,"exp_solve":exp,"exp_link":exp_link}
         data_part = """
         {QUESTION BEGINS}
         {QUESTION NUMBER} q_no
@@ -69,8 +83,8 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
         {OPTION ENGLISH 4} opt_4
         {OPTION ENGLISH 5}
         {RIGHT ANSWER} ans
-        {EXPLANATION ENGLISH} No explanation available
-        {EXPLANATION LINK ENGLISH} No explanation available
+        {EXPLANATION ENGLISH} exp_solve
+        {EXPLANATION LINK ENGLISH} exp_link
         {QUESTION ENDS}
         """
         data_1 = replace_all(data_part, dic)
