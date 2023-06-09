@@ -41,8 +41,6 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
             text = text.replace(i, j)
         return text
     
-    exp = "No explanation available"
-    exp_link = "No explanation available"
     p = 1
     for i in range(quation_start, quation_end + 1):
         q_no = str(p)
