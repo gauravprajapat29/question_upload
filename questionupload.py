@@ -1,8 +1,9 @@
-import  streamlit as st
+import streamlit as st
 from docx import Document
 import pandas as pd
 
-def data_conv(sheet_url,sheet_Name,start_q,end_q):
+
+def data_conv(sheet_url, sheet_Name, start_q, end_q):
     sheet_adr = sheet_url
     sheet_name = sheet_Name
     quation_start = int(start_q)
@@ -10,10 +11,9 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
 
     ind = sheet_adr.index("edit")
 
-    url = sheet_url[:ind]+f"gviz/tq?tqx=out:csv&sheet={sheet_name}"
+    url = sheet_url[:ind] + f"gviz/tq?tqx=out:csv&sheet={sheet_name}"
     dataset = pd.read_csv(url, index_col=False)
-    col = dataset.shape[1]
-    
+
     data_part_1 = '''
         INSTRUCTIONS:
 
@@ -40,7 +40,11 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
         for i, j in dic.items():
             text = text.replace(i, j)
         return text
-    
+
+    exp = "No explanation available"
+    exp_link = "No explanation available"
+
+
     p = 1
     for i in range(quation_start, quation_end + 1):
         q_no = str(p)
@@ -58,18 +62,22 @@ def data_conv(sheet_url,sheet_Name,start_q,end_q):
             ans = "3"
         elif ans == "D" or ans == "d" or ans == "4":
             ans = "4"
-         
-        if col == 7 :
+
+        if (str(dataset.iloc[:, 7][i])=='nan') and (str(dataset.iloc[:, 8][i])=='nan'):
             exp = "No explanation available"
             exp_link = "No explanation available"
-        elif col == 8 :
+        elif (str(dataset.iloc[:, 7][i])!='nan') and (str(dataset.iloc[:, 8][i])=='nan'):
             exp = str(dataset.iloc[:, 7][i])
             exp_link = "No explanation available"
-        elif col == 9 :
+        elif (str(dataset.iloc[:, 7][i])=='nan') and (str(dataset.iloc[:, 8][i])!='nan'):
+            exp = "No explanation available"
+            exp_link = str(dataset.iloc[:, 8][i])
+        elif (str(dataset.iloc[:, 7][i]) != 'nan') and (str(dataset.iloc[:, 8][i]) != 'nan'):
             exp = str(dataset.iloc[:, 7][i])
             exp_link = str(dataset.iloc[:, 8][i])
-           
-        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4, "ans": ans,"exp_solve":exp,"exp_link":exp_link}
+
+        dic = {"q_no": q_no, "quation": quation, "opt_1": opt_1, "opt_2": opt_2, "opt_3": opt_3, "opt_4": opt_4,
+               "ans": ans, "exp_solve": exp, "exp_link": exp_link}
         data_part = """
         {QUESTION BEGINS}
         {QUESTION NUMBER} q_no
@@ -112,5 +120,5 @@ sheet_name = st.text_input("Enter Sheet Name")
 start_q = st.text_input("Start Q. No.")
 end_q = st.text_input("End Q. No.")
 button = st.button("Done")
-if button :
-    data_conv(url,sheet_name,start_q,end_q)
+if button:
+    data_conv(url, sheet_name, start_q, end_q)
